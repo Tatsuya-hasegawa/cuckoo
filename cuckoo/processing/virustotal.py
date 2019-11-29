@@ -20,8 +20,7 @@ log = logging.getLogger(__name__)
 class VirusTotal(Processing):
     """Get antivirus signatures from VirusTotal.com for various results.
 
-    Currently obtains VirusTotal results for the target sample or URL and the
-    dropped files.
+    Currently obtains VirusTotal results for the target sample or URL.
     """
     order = 2
 
@@ -52,13 +51,6 @@ class VirusTotal(Processing):
             raise CuckooProcessingError(
                 "Unsupported task category: %s" % self.task["category"]
             )
-
-        # Scan any dropped files that have an interesting filetype.
-        for row in self.results.get("dropped", []):
-            if not self.should_scan_file(row["type"]):
-                continue
-
-            row["virustotal"] = self.scan_file(row["path"], summary=True)
 
         return results
 
@@ -100,3 +92,4 @@ class VirusTotal(Processing):
         @param filetype: file type
         """
         return "PE32" in filetype or "MS-DOS" in filetype
+        
